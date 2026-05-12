@@ -1,7 +1,6 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
-import pandas_ta as ta
 import streamlit as st
 
 def render_candlestick_chart(df: pd.DataFrame, ticker: str, show_sma=True, show_macd=True):
@@ -12,13 +11,15 @@ def render_candlestick_chart(df: pd.DataFrame, ticker: str, show_sma=True, show_
         
     # Calculate indicators
     if show_sma:
-        df['SMA_20'] = ta.sma(df['Close'], length=20)
-        df['SMA_50'] = ta.sma(df['Close'], length=50)
+        df['SMA_20'] = df['Close'].rolling(window=20).mean()
+        df['SMA_50'] = df['Close'].rolling(window=50).mean()
     
     if show_macd:
-        macd = ta.macd(df['Close'])
-        if macd is not None and not macd.empty:
-            df = pd.concat([df, macd], axis=1)
+        exp1 = df['Close'].ewm(span=12, adjust=False).mean()
+        exp2 = df['Close'].ewm(span=26, adjust=False).mean()
+        df['MACD_12_26_9'] = exp1 - exp2
+        df['MACDs_12_26_9'] = df['MACD_12_26_9'].ewm(span=9, adjust=False).mean()
+        df['MACDh_12_26_9'] = df['MACD_12_26_9'] - df['MACDs_12_26_9']
 
     rows = 2 if show_macd else 1
     row_heights = [0.7, 0.3] if show_macd else [1.0]

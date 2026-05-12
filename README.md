@@ -1,3 +1,4 @@
+
 # FinDash - Professional Stock Market Dashboard
 
 A modern, responsive, and robust Streamlit-based stock market dashboard designed for financial analytics, portfolio tracking, and interactive data visualization.
@@ -48,3 +49,4 @@ streamlit run app.py
 ## Testing & Validation
 - **API Limits:** The application primarily uses `yfinance` which has generous implicit limits, but caching (`@st.cache_data`) is implemented extensively to minimize redundant calls and improve performance.
 - **UI Responsiveness:** Test on various window sizes; Streamlit's column layout handles mobile viewports gracefully by stacking elements.
+
